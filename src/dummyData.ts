@@ -34,12 +34,8 @@ function generateDummyEmployee(
 
 export function generateDummyData({
   numCompanies = 3,
-  numDepartmentsPerCompany = 8,
-  numEmployeesPerDepartment = 10,
 }: {
   numCompanies?: number;
-  numDepartmentsPerCompany?: number;
-  numEmployeesPerDepartment?: number;
 }): {
   companies: { [id: string]: ICompany };
 } {
@@ -49,11 +45,14 @@ export function generateDummyData({
     const company = generateDummyCompany();
     companies[company.id] = company;
 
-    for (let j = 0; j < numDepartmentsPerCompany; j++) {
+    const numDepartments = Math.floor(Math.random() * 5) + 12;
+
+    for (let j = 0; j < numDepartments; j++) {
       const department = generateDummyDepartment(company.id);
       company.departments[department.id] = department;
+      const numEmployees = Math.floor(Math.random() * 20);
 
-      for (let k = 0; k < numEmployeesPerDepartment; k++) {
+      for (let k = 0; k < numEmployees; k++) {
         const employee = generateDummyEmployee(department.id, company.id);
         company.employees[employee.id] = employee;
       }
@@ -64,9 +63,7 @@ export function generateDummyData({
 }
 
 const { companies } = generateDummyData({
-  numCompanies: 3,
-  numDepartmentsPerCompany: 5,
-  numEmployeesPerDepartment: 5,
+  numCompanies: 5,
 });
 
 export const dummyCompanies = companies;

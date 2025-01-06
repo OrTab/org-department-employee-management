@@ -4,7 +4,7 @@ import { Company } from "./entities/Company";
 import { RootStore } from "./RootStore";
 
 export class CompanyStore extends BaseEntityStore<Company, ICompany> {
-  @observable selectedCompanyId: string | null = null;
+  @observable selectedCompanyId: string = "";
 
   constructor(rootStore: RootStore) {
     super(rootStore);
@@ -25,11 +25,17 @@ export class CompanyStore extends BaseEntityStore<Company, ICompany> {
     this.selectedCompanyId = companyId;
   }
 
+  @action.bound
+  updateCompany(company: ICompany) {
+    this.companies[company.id] = new Company(this.rootStore, company);
+  }
+
   @computed
   get companies() {
     return this.entities;
   }
 
+  @computed
   get selectedCompany() {
     return this.companies[this.selectedCompanyId!];
   }

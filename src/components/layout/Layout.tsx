@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Layout as AntLayout, Menu } from "antd";
+import { Layout as AntLayout, Menu, Select } from "antd";
 import { Text } from "../common/Text";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAppContext } from "../../hooks/useAppContext";
@@ -22,7 +22,7 @@ export const Layout = observer(
     const [isCollapsed, setIsCollapsed] = useState(false);
     const {
       rootStore: {
-        companyStore: { selectedCompanyId },
+        companyStore: { selectedCompanyId, companies, setSelectedCompanyId },
       },
     } = useAppContext();
     const location = useLocation();
@@ -46,11 +46,21 @@ export const Layout = observer(
           <Text color='white' type='title'>
             Management System
           </Text>
+
+          <Select
+            placeholder='Select a company'
+            value={selectedCompanyId}
+            onChange={(companyId) => setSelectedCompanyId(companyId)}
+            options={Object.entries(companies).map(([companyId, company]) => ({
+              value: companyId,
+              text: company.name,
+            }))}
+          />
         </Header>
         <AntLayout>
           <Sider
             width={200}
-            style={{ background: "#fff" }}
+            style={{ background: "#fff", borderRight: "1px solid #0000002b" }}
             collapsed={isCollapsed}
             collapsible
             onCollapse={() => setIsCollapsed(!isCollapsed)}

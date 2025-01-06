@@ -1,4 +1,4 @@
-import { action, computed, observable } from "mobx";
+import { action, computed, makeObservable, observable, remove } from "mobx";
 import type { RootStore } from "../RootStore";
 import { Employee } from "./Employee";
 import { Department } from "./Department";
@@ -25,6 +25,7 @@ export class Company {
     this.rootStore = rootStore;
     this.setEmployees(employees);
     this.setDepartments(departments);
+    makeObservable(this);
   }
 
   @action
@@ -47,6 +48,21 @@ export class Company {
     }, {});
   }
 
+  @action
+  deleteDepartment(departmentId: string) {
+    remove(this._departments, departmentId);
+  }
+
+  @action
+  deleteEmployee(employeeId: string) {
+    remove(this._employees, employeeId);
+  }
+
+  @action
+  moveEmployeeToDepartment(employeeId: string, departmentId: string) {
+    this._employees[employeeId].departmentId = departmentId;
+  }
+
   @computed
   get employees() {
     return Object.values(this._employees);
@@ -55,5 +71,22 @@ export class Company {
   @computed
   get departments() {
     return Object.values(this._departments);
+  }
+
+  @computed
+  get departmentsById() {
+    return this._departments;
+  }
+
+  @computed
+  get employeesByDepartmentId() {
+    return this.employees.reduce<Record<string, Employee[]>>(
+      (acc, employee) => {
+        acc[employee.departmentId] ||= [];
+        acc[employee.departmentId].push(employee);
+        return acc;
+      },
+      {}
+    );
   }
 }

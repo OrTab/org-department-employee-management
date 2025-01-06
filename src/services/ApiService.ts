@@ -15,7 +15,8 @@ export class ApiService {
     return value;
   }
 
-  static async deleteItem(key: string): Promise<void> {
+  static async delete<T>(key: string, value: T): Promise<T> {
     StorageService.setStorage({ key, value: undefined });
+    return value;
   }
 }
