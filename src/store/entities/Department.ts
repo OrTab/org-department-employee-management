@@ -1,4 +1,4 @@
-import { action, makeObservable, observable } from "mobx";
+import { computed, makeObservable, observable } from "mobx";
 import type { RootStore } from "../RootStore";
 
 export class Department {
@@ -15,8 +15,11 @@ export class Department {
     makeObservable(this);
   }
 
-  @action.bound
-  setDepartmentName(name: string) {
-    this.name = name;
+  @computed
+  get employees() {
+    const { selectedCompany } = this.rootStore.companyStore;
+    return selectedCompany.employees.filter(
+      (employee) => employee.departmentId === this.id
+    );
   }
 }

@@ -4,6 +4,8 @@ interface ICompany {
   address: string;
   phone: string;
   email: string;
+  departments: Record<string, IDepartment>;
+  employees: Record<string, IEmployee>;
 }
 
 interface IDepartment {

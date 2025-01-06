@@ -5,6 +5,8 @@ function generateDummyCompany(): ICompany {
     address: `Address ${Math.floor(Math.random() * 100)}`,
     phone: `Phone ${Math.floor(Math.random() * 100)}`,
     email: `email${Math.floor(Math.random() * 100)}@example.com`,
+    departments: {},
+    employees: {},
   };
 }
 
@@ -40,12 +42,8 @@ export function generateDummyData({
   numEmployeesPerDepartment?: number;
 }): {
   companies: { [id: string]: ICompany };
-  departments: { [id: string]: IDepartment };
-  employees: { [id: string]: IEmployee };
 } {
   const companies: { [id: string]: ICompany } = {};
-  const departments: { [id: string]: IDepartment } = {};
-  const employees: { [id: string]: IEmployee } = {};
 
   for (let i = 0; i < numCompanies; i++) {
     const company = generateDummyCompany();
@@ -53,24 +51,22 @@ export function generateDummyData({
 
     for (let j = 0; j < numDepartmentsPerCompany; j++) {
       const department = generateDummyDepartment(company.id);
-      departments[department.id] = department;
+      company.departments[department.id] = department;
 
       for (let k = 0; k < numEmployeesPerDepartment; k++) {
         const employee = generateDummyEmployee(department.id, company.id);
-        employees[employee.id] = employee;
+        company.employees[employee.id] = employee;
       }
     }
   }
 
-  return { companies, departments, employees };
+  return { companies };
 }
 
-const { companies, departments, employees } = generateDummyData({
+const { companies } = generateDummyData({
   numCompanies: 3,
   numDepartmentsPerCompany: 5,
   numEmployeesPerDepartment: 5,
 });
 
 export const dummyCompanies = companies;
-export const dummyDepartments = departments;
-export const dummyEmployees = employees;
