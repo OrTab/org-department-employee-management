@@ -90,6 +90,7 @@ export class Company {
 
   @computed
   get employeesByDepartmentId() {
+    // this is cached by mobx so it will be updated when the employees change
     return this.employees.reduce<Record<string, Employee[]>>(
       (acc, employee) => {
         acc[employee.departmentId] ||= [];

@@ -17,6 +17,7 @@ export class Department {
   @computed
   get employees() {
     const { selectedCompany } = this.rootStore.companyStore;
+    // efficient access to get employees by department id
     return selectedCompany.employeesByDepartmentId[this.id] || [];
   }
 }

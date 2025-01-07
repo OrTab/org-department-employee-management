@@ -30,8 +30,8 @@ class StorageService {
     try {
       const stringValue = JSON.stringify(value);
       window[storageType].setItem(key, stringValue);
-    } catch (error) {
-      console.error(`Error setting item in ${storageType}:`, error);
+    } catch {
+      return undefined;
     }
   }
 }

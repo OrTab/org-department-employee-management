@@ -31,8 +31,7 @@ export const DepartmentsPage = observer(() => {
           selectedCompanyId
         );
         message.success("Department deleted successfully!");
-      } catch (error) {
-        console.error(error);
+      } catch {
         message.error("Failed to delete department!");
       } finally {
         setLoading(false);
@@ -69,8 +68,7 @@ export const DepartmentsPage = observer(() => {
       );
       message.success("Employees deleted successfully!");
       showDeleteConfirmation(selectedDepartmentId);
-    } catch (error) {
-      console.error(error);
+    } catch {
       message.error("Failed to delete employees!");
     } finally {
       setLoading(false);
@@ -93,8 +91,7 @@ export const DepartmentsPage = observer(() => {
       );
       message.success("Employees moved successfully!");
       showDeleteConfirmation(selectedDepartmentId);
-    } catch (error) {
-      console.error(error);
+    } catch {
       message.error("Failed to move employees!");
     } finally {
       setLoading(false);
