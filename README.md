@@ -43,7 +43,7 @@ The project uses GitHub Actions for continuous integration and deployment:
 - Automatic build process
 - Deployment to GitHub Pages when tests pass
 
-View the deployed application at: `/org-department-employee-management/`
+View the deployed application at: `https://ortab.github.io/org-department-employee-management`
 
 ## Project Structure
 
@@ -61,12 +61,21 @@ src/
 └── types/         # TypeScript type definitions
 ```
 
+## Architecture
+
+The application follows a clean architecture pattern with:
+
+- **MobX Stores:** Handle state management and data persistence
+- **Controllers:** Manage business logic and data operations
+- **Services:** Handle API calls and storage operations
+- **Components:** Present UI and handle user interactions
+
 ## Getting Started
 
 1. Clone the repository:
 
    ```sh
-   git clone <repository-url>
+   git clone https://github.com/OrTab/org-department-employee-management.git
    ```
 
 2. Install dependencies:
@@ -84,7 +93,7 @@ src/
 4. Run tests:
 
    ```sh
-   npm test
+   npm run test
    ```
 
 ## Build
@@ -94,15 +103,6 @@ To build for production:
 ```sh
 npm run build
 ```
-
-## Architecture
-
-The application follows a clean architecture pattern with:
-
-- **MobX Stores:** Handle state management and data persistence
-- **Controllers:** Manage business logic and data operations
-- **Services:** Handle API calls and storage operations
-- **Components:** Present UI and handle user interactions
 
 ## Testing
 
