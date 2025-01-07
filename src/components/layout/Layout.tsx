@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Layout as AntLayout, Menu, Select } from "antd";
-import { Text } from "../common/Text";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAppContext } from "../../hooks/useAppContext";
 import { observer } from "mobx-react-lite";
+import styled from "styled-components";
+
 const { Header, Sider, Content } = AntLayout;
 
 const ROUTES = [
@@ -35,7 +36,7 @@ export const Layout = observer(
     return !selectedCompanyId ? (
       <div>No company selected</div>
     ) : (
-      <AntLayout className='layout'>
+      <MainLayout>
         <Header
           style={{
             display: "flex",
@@ -43,19 +44,22 @@ export const Layout = observer(
             background: "#00263e",
           }}
         >
-          <Text color='white' type='title'>
-            Management System
-          </Text>
+          <HeaderContent>
+            <Title>Management System</Title>
 
-          <Select
-            placeholder='Select a company'
-            value={selectedCompanyId}
-            onChange={(companyId) => setSelectedCompanyId(companyId)}
-            options={Object.entries(companies).map(([companyId, company]) => ({
-              value: companyId,
-              text: company.name,
-            }))}
-          />
+            <Select
+              style={{ width: 200 }}
+              placeholder='Select a company'
+              value={selectedCompanyId}
+              onChange={(companyId) => setSelectedCompanyId(companyId)}
+              options={Object.entries(companies).map(
+                ([companyId, company]) => ({
+                  value: companyId,
+                  label: company.name,
+                })
+              )}
+            />
+          </HeaderContent>
         </Header>
         <AntLayout>
           <Sider
@@ -81,7 +85,22 @@ export const Layout = observer(
           </Sider>
           <Content>{children}</Content>
         </AntLayout>
-      </AntLayout>
+      </MainLayout>
     );
   }
 );
+
+const HeaderContent = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+`;
+
+const Title = styled.h2`
+  color: white;
+`;
+
+const MainLayout = styled(AntLayout)`
+  min-height: 100vh;
+`;
