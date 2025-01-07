@@ -1,26 +1,54 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { useAppContext } from "./useAppContext";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export const useInitApp = () => {
   const {
     rootController,
     rootStore: {
-      companyStore: { selectedCompanyId },
+      companyStore: {
+        selectedCompanyId,
+        companies,
+        setSelectedCompanyId,
+        isLoaded,
+      },
     },
   } = useAppContext();
-  const isNavigatesToCompany = useRef(false);
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const paths = pathname.split("/").filter(Boolean);
+  const companyId = paths[1];
 
   useEffect(() => {
     rootController.loadAppData();
   }, [rootController]);
 
+  // if selectedCompanyId is not set, set it to param value the first company id
   useEffect(() => {
-    if (isNavigatesToCompany.current || !selectedCompanyId) {
+    if (!isLoaded) {
       return;
     }
-    isNavigatesToCompany.current = true;
-    navigate(`company/${selectedCompanyId}/departments`);
-  }, [selectedCompanyId, navigate]);
+    if (!selectedCompanyId) {
+      let _companyId = companyId;
+      if (!companyId || !companies[companyId]) {
+        _companyId = Object.keys(companies)[0];
+      }
+      setSelectedCompanyId(_companyId);
+    }
+  }, [
+    paths,
+    selectedCompanyId,
+    companyId,
+    companies,
+    setSelectedCompanyId,
+    isLoaded,
+  ]);
+
+  useEffect(() => {
+    if (!selectedCompanyId) {
+      return;
+    }
+    const path = paths[paths.length - 1] || "departments";
+    navigate(`company/${selectedCompanyId}/${path}`);
+  }, [navigate, selectedCompanyId]);
 };

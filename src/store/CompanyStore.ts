@@ -5,6 +5,7 @@ import { RootStore } from "./RootStore";
 
 export class CompanyStore extends BaseEntityStore<Company, ICompany> {
   @observable selectedCompanyId: string = "";
+  @observable isLoaded: boolean = false;
 
   constructor(rootStore: RootStore) {
     super(rootStore);
@@ -17,7 +18,7 @@ export class CompanyStore extends BaseEntityStore<Company, ICompany> {
       entitiesData: companies,
       Entity: Company,
     });
-    this.setSelectedCompanyId(Object.keys(this.companies)[0]);
+    this.isLoaded = true;
   }
 
   @action.bound

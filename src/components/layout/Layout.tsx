@@ -22,7 +22,7 @@ export const Layout = observer(
     const [isCollapsed, setIsCollapsed] = useState(false);
     const {
       rootStore: {
-        companyStore: { selectedCompanyId, companies, setSelectedCompanyId },
+        companyStore: { selectedCompanyId, setSelectedCompanyId, companies },
       },
     } = useAppContext();
     const location = useLocation();

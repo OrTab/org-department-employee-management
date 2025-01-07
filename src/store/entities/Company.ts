@@ -43,7 +43,7 @@ export class Company {
     this._employees = Object.entries(employeesData).reduce<
       Record<string, Employee>
     >((acc, [id, data]) => {
-      acc[id] = new Employee(this.rootStore, data);
+      acc[id] = new Employee(data);
       return acc;
     }, {});
   }

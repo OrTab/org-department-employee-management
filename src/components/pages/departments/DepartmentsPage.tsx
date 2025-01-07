@@ -101,7 +101,7 @@ export const DepartmentsPage = observer(() => {
       key: "employees",
     },
     {
-      key: "action",
+      key: "delete",
       render: (_: string, { key }: { key: string }) => (
         <Button type='primary' danger onClick={() => handleDeleteClick(key)}>
           Delete Department
@@ -146,7 +146,7 @@ export const DepartmentsPage = observer(() => {
               .filter((department) => department.id !== selectedDepartmentId)
               .map((department) => ({
                 value: department.id,
-                text: department.name,
+                label: department.name,
               }))}
           />
         )}
