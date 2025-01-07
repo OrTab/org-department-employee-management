@@ -1,7 +1,21 @@
 import { observer } from "mobx-react-lite";
 import { useAppContext } from "../../../hooks/useAppContext";
-import { Button, Modal, Table, Form, Input, Select } from "antd";
+import {
+  Button,
+  Modal,
+  Table,
+  Form,
+  Input,
+  Select,
+  message,
+  TableColumnType,
+} from "antd";
 import { useState } from "react";
+import styled from "styled-components";
+import { debounce } from "../../../utils";
+import { Employee } from "../../../store/entities/Employee";
+import { mediumUp } from "../../../style/breakpoints";
+import { useWindowSize } from "../../../hooks/useWindowSize";
 
 export const EmployeesPage = observer(() => {
   const {
@@ -14,32 +28,44 @@ export const EmployeesPage = observer(() => {
           departmentsById,
           employeesById,
           departments,
+          employeesByDepartmentId,
         },
       },
     },
   } = useAppContext();
 
   const [isAddModalVisible, setIsAddModalVisible] = useState(false);
+  const [searchText, setSearchText] = useState("");
+  const [selectedDepartments, setSelectedDepartments] = useState<string[]>([]);
   const [form] = Form.useForm();
+  const { isMediumUp } = useWindowSize();
+
+  const handleDeleteEmployee = async (employeeId: string) => {
+    try {
+      await companyController.deleteEmployee(employeeId, selectedCompanyId);
+      message.success("Employee deleted successfully");
+    } catch {
+      message.error("Failed to delete employee");
+    }
+  };
 
   const handleDeleteClick = (employeeId: string) => {
     const employee = employeesById[employeeId];
     Modal.confirm({
       title: `Are you sure you want to delete this employee?`,
       content: `Employee Name: ${employee.name}`,
-      onOk: () =>
-        companyController.deleteEmployee(employeeId, selectedCompanyId),
+      onOk: () => handleDeleteEmployee(employeeId),
     });
   };
 
   const handleAddEmployee = async () => {
     try {
       const values = await form.validateFields();
-      console.log({ values });
-      companyController.addEmployee(values, selectedCompanyId);
+      await companyController.addEmployee(values, selectedCompanyId);
+      message.success("Employee added successfully");
       handleCloseModal();
-    } catch (error) {
-      console.error("Validation Failed:", error);
+    } catch {
+      message.error("Failed to add employee");
     }
   };
 
@@ -48,11 +74,12 @@ export const EmployeesPage = observer(() => {
     form.resetFields();
   };
 
-  const columns = [
+  const columns: TableColumnType<any>[] = [
     {
       title: "Name",
       dataIndex: "name",
       key: "name",
+      fixed: "left",
     },
     {
       title: "Email",
@@ -75,13 +102,28 @@ export const EmployeesPage = observer(() => {
           danger
           onClick={() => handleDeleteClick(record.key)}
         >
-          Delete Employee
+          Delete
         </Button>
       ),
     },
   ];
 
-  const employeesData = employees.map((employee) => ({
+  const _employees = selectedDepartments.length
+    ? selectedDepartments.reduce<Employee[]>((acc, departmentId) => {
+        acc.push(...employeesByDepartmentId[departmentId]);
+        return acc;
+      }, [])
+    : employees;
+
+  const filteredEmployees = _employees.filter(
+    (employee) =>
+      employee.name.toLowerCase().includes(searchText.toLowerCase()) ||
+      employee.email.toLowerCase().includes(searchText.toLowerCase())
+  );
+
+  const debouncedSearch = debounce(setSearchText, 300);
+
+  const employeesData = filteredEmployees.map((employee) => ({
     key: employee.id,
     name: employee.name,
     email: employee.email,
@@ -89,18 +131,38 @@ export const EmployeesPage = observer(() => {
   }));
 
   return (
-    <div>
-      <div style={styles.header}>
+    <PageContainer>
+      <TableHeader>
+        <FilterSearchInput
+          placeholder='Search employees by name or email'
+          onChange={(e) => debouncedSearch(e.target.value)}
+        />
+        <DepartmentSelect
+          placeholder='Filter by department'
+          allowClear
+          mode='multiple'
+          value={selectedDepartments}
+          onChange={(value) => setSelectedDepartments(value as string[])}
+          filterOption={(input, option) =>
+            option?.label.toLowerCase().includes(input.toLowerCase()) ?? false
+          }
+          options={departments.map((department) => ({
+            value: department.id,
+            label: department.name,
+          }))}
+          maxTagCount={2}
+        />
         <Button type='primary' onClick={() => setIsAddModalVisible(true)}>
           Add Employee
         </Button>
-      </div>
+      </TableHeader>
 
       <Table
+        scroll={{ x: "max-content" }}
         dataSource={employeesData}
         columns={columns}
         rowKey='key'
-        style={{ marginTop: 16 }}
+        pagination={isMediumUp ? { size: "default", pageSize: 9 } : false}
       />
 
       <Modal
@@ -144,14 +206,38 @@ export const EmployeesPage = observer(() => {
           </Form.Item>
         </Form>
       </Modal>
-    </div>
+    </PageContainer>
   );
 });
 
-const styles = {
-  header: {
-    display: "flex",
-    justifyContent: "center",
-    marginBottom: 16,
-  },
-};
+////// STYLES //////
+
+const PageContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin: 10px;
+`;
+
+const TableHeader = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  ${mediumUp} {
+    flex-direction: row;
+  }
+`;
+
+const FilterSearchInput = styled(Input)`
+  && {
+    width: 250px;
+  }
+`;
+
+const DepartmentSelect = styled(Select)`
+  && {
+    width: 250px;
+  }
+`;
