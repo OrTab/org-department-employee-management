@@ -1,4 +1,5 @@
 import { makeObservable, observable } from "mobx";
+import { IEmployee } from "../../types";
 
 export class Employee {
   id: string;

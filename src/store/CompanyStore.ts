@@ -2,6 +2,7 @@ import { action, computed, makeObservable, observable } from "mobx";
 import { BaseEntityStore } from "./BaseEntityStore";
 import { Company } from "./entities/Company";
 import { RootStore } from "./RootStore";
+import { ICompany } from "../types";
 
 export class CompanyStore extends BaseEntityStore<Company, ICompany> {
   @observable selectedCompanyId: string = "";

@@ -2,6 +2,7 @@ import { action, computed, makeObservable, observable, remove } from "mobx";
 import type { RootStore } from "../RootStore";
 import { Employee } from "./Employee";
 import { Department } from "./Department";
+import { ICompany, IDepartment, IEmployee } from "../../types";
 
 export class Company {
   private readonly rootStore: RootStore;

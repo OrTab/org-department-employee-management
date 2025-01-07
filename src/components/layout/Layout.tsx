@@ -6,19 +6,9 @@ import { observer } from "mobx-react-lite";
 import styled from "styled-components";
 import { useWindowSize } from "../../hooks/useWindowSize";
 import { mediumUp } from "../../style/breakpoints";
+import { ROUTES } from "../../routes";
 
 const { Header, Sider, Content } = AntLayout;
-
-const ROUTES = [
-  {
-    key: "departments",
-    label: "Departments",
-  },
-  {
-    key: "employees",
-    label: "Employees",
-  },
-];
 
 export const Layout = observer(
   ({ children }: { children: React.ReactNode }) => {
@@ -30,12 +20,15 @@ export const Layout = observer(
           selectedCompanyId,
           setSelectedCompanyId,
           companies,
+          selectedCompany,
         },
       },
     } = useAppContext();
     const location = useLocation();
     const navigate = useNavigate();
     const { isMediumUp } = useWindowSize();
+
+    const currentPage = location.pathname.split("/").pop()!;
 
     const handleMenuClick = (path: string) => {
       navigate(`company/${selectedCompanyId}/${path}`);
@@ -49,7 +42,9 @@ export const Layout = observer(
       <MainLayout>
         <AppHeader>
           <HeaderContent>
-            <Title>Management System</Title>
+            <Title>
+              {selectedCompany.name} {currentPage}
+            </Title>
             <CompaniesSelect
               placeholder='Select a company'
               value={selectedCompanyId}
@@ -73,7 +68,7 @@ export const Layout = observer(
             onCollapse={() => setIsCollapsed(!isCollapsed)}
           >
             <PagesMenu
-              selectedKeys={[location.pathname.split("/").pop()!]}
+              selectedKeys={[currentPage]}
               mode='inline'
               defaultSelectedKeys={["1"]}
               items={ROUTES.map((route) => ({

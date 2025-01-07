@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useAppContext } from "./useAppContext";
 import { useLocation, useNavigate } from "react-router-dom";
+import { ROUTES } from "../routes";
 
 export const useInitApp = () => {
   const {
@@ -33,7 +34,10 @@ export const useInitApp = () => {
       if (!companyId || !companies[companyId]) {
         _companyId = Object.keys(companies)[0];
       }
-      setSelectedCompanyId(_companyId);
+      // imitate loading
+      setTimeout(() => {
+        setSelectedCompanyId(_companyId);
+      }, 1000);
     }
   }, [
     paths,
@@ -48,7 +52,10 @@ export const useInitApp = () => {
     if (!selectedCompanyId) {
       return;
     }
-    const path = paths[paths.length - 1] || "departments";
-    navigate(`company/${selectedCompanyId}/${path}`);
+
+    const path = paths[paths.length - 1];
+    const route =
+      ROUTES.find((route) => route.key === path)?.key || "departments";
+    navigate(`company/${selectedCompanyId}/${route}`);
   }, [navigate, selectedCompanyId]);
 };

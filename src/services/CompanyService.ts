@@ -1,7 +1,8 @@
+import { ICompany } from "../types";
 import { ApiService } from "./ApiService";
 
 export class CompanyService {
-  static readonly COMPANIES_LIST_KEY = "companiesList";
+  static readonly COMPANIES_LIST_KEY = "companiesIds";
   static readonly COMPANY_PREFIX = "company_";
 
   static getCompanyKey(id: string) {
@@ -14,9 +15,12 @@ export class CompanyService {
     if (!companyIds.length) {
       return null;
     }
+
     for (const id of companyIds) {
       const company = await this.getCompany(id);
-      if (company) companies[id] = company;
+      if (company) {
+        companies[id] = company;
+      }
     }
 
     return companies;
@@ -31,18 +35,15 @@ export class CompanyService {
   }
 
   static async updateCompany(company: ICompany) {
-    await ApiService.put(this.getCompanyKey(company.id), company);
-    return company;
+    return ApiService.put(this.getCompanyKey(company.id), company);
   }
 
   static async saveCompanies(companies: Record<string, ICompany>) {
     const companyIds = Object.keys(companies);
     await ApiService.put(this.COMPANIES_LIST_KEY, companyIds);
 
-    await Promise.all(
+    return Promise.all(
       Object.values(companies).map((company) => this.updateCompany(company))
     );
-
-    return companies;
   }
 }

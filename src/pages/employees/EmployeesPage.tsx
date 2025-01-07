@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite";
-import { useAppContext } from "../../../hooks/useAppContext";
+import { useAppContext } from "../../hooks/useAppContext";
 import {
   Button,
   Modal,
@@ -12,12 +12,12 @@ import {
 } from "antd";
 import { useState } from "react";
 import styled from "styled-components";
-import { debounce } from "../../../utils";
-import { Employee } from "../../../store/entities/Employee";
-import { mediumUp } from "../../../style/breakpoints";
-import { useWindowSize } from "../../../hooks/useWindowSize";
+import { debounce } from "../../utils";
+import { Employee } from "../../store/entities/Employee";
+import { mediumUp } from "../../style/breakpoints";
+import { useWindowSize } from "../../hooks/useWindowSize";
 
-export const EmployeesPage = observer(() => {
+const EmployeesPage = observer(() => {
   const {
     rootController: { companyController },
     rootStore: {
@@ -61,6 +61,8 @@ export const EmployeesPage = observer(() => {
   const handleAddEmployee = async () => {
     try {
       const values = await form.validateFields();
+      console.log(values);
+
       await companyController.addEmployee(values, selectedCompanyId);
       message.success("Employee added successfully");
       handleCloseModal();
@@ -115,11 +117,13 @@ export const EmployeesPage = observer(() => {
       }, [])
     : employees;
 
-  const filteredEmployees = _employees.filter(
-    (employee) =>
-      employee.name.toLowerCase().includes(searchText.toLowerCase()) ||
-      employee.email.toLowerCase().includes(searchText.toLowerCase())
-  );
+  const filteredEmployees = _employees.filter((employee) => {
+    const searchTextLower = searchText.toLowerCase().trim();
+    return (
+      employee.name.toLowerCase().includes(searchTextLower) ||
+      employee.email.toLowerCase().includes(searchTextLower)
+    );
+  });
 
   const debouncedSearch = debounce(setSearchText, 300);
 
@@ -241,3 +245,5 @@ const DepartmentSelect = styled(Select)`
     width: 250px;
   }
 `;
+
+export default EmployeesPage;

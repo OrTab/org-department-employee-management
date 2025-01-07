@@ -1,4 +1,4 @@
-interface ICompany {
+export interface ICompany {
   id: string;
   name: string;
   address: string;
@@ -8,13 +8,13 @@ interface ICompany {
   employees: Record<string, IEmployee>;
 }
 
-interface IDepartment {
+export interface IDepartment {
   id: string;
   name: string;
   companyId: string;
 }
 
-interface IEmployee {
+export interface IEmployee {
   id: string;
   name: string;
   email: string;

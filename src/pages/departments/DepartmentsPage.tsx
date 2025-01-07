@@ -1,10 +1,10 @@
 import { observer } from "mobx-react-lite";
-import { useAppContext } from "../../../hooks/useAppContext";
+import { useAppContext } from "../../hooks/useAppContext";
 import { Table, Button, Modal, Select, message, TableColumnsType } from "antd";
 import { useState, useCallback } from "react";
 import styled from "styled-components";
 
-export const DepartmentsPage = observer(() => {
+const DepartmentsPage = observer(() => {
   const {
     rootStore: {
       companyStore: { selectedCompany, selectedCompanyId },
@@ -59,7 +59,9 @@ export const DepartmentsPage = observer(() => {
   );
 
   const handleDeleteEmployees = useCallback(async () => {
-    if (!selectedDepartmentId) return;
+    if (!selectedDepartmentId) {
+      return;
+    }
     try {
       setLoading(true);
       await companyController.deleteDepartmentEmployees(
@@ -208,3 +210,5 @@ const FullWidthSelect = styled(Select)`
     width: 100%;
   }
 `;
+
+export default DepartmentsPage;
