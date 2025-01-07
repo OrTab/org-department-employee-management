@@ -2,6 +2,7 @@ import { observer } from "mobx-react-lite";
 import { Table, Button, TableColumnsType } from "antd";
 import { useDepartmentsPage } from "./hooks/useDepartmentsPage";
 import { DepartmentActionModal } from "./components/DepartmentActionModal";
+import { AddDepartmentModal } from "./components/AddDepartmentModal";
 
 export const DepartmentsPage = observer(() => {
   const {
@@ -16,6 +17,11 @@ export const DepartmentsPage = observer(() => {
     setActionForEmployees,
     setTargetDepartment,
     targetDepartment,
+    isAddModalVisible,
+    addNewDepartment,
+    handleCloseAddDepartmentModal,
+    form,
+    handleOpenAddDepartmentModal,
   } = useDepartmentsPage();
 
   const dataSource = departments.map((department) => ({
@@ -49,11 +55,20 @@ export const DepartmentsPage = observer(() => {
 
   return (
     <>
+      <Button type='primary' onClick={handleOpenAddDepartmentModal}>
+        Add Department
+      </Button>
       <Table
         scroll={{ x: "max-content" }}
         columns={columns}
         dataSource={dataSource}
         pagination={false}
+      />
+      <AddDepartmentModal
+        form={form}
+        isOpen={isAddModalVisible}
+        onAddDepartment={addNewDepartment}
+        onCancel={handleCloseAddDepartmentModal}
       />
       <DepartmentActionModal
         isOpen={!!selectedDepartment}

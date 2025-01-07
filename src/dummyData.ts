@@ -119,7 +119,7 @@ function generateDummyDepartment(
   };
 }
 
-function generateDummyEmployee(
+export function generateDummyEmployee(
   departmentId: string,
   companyId: string
 ): IEmployee {

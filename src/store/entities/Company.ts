@@ -1,4 +1,11 @@
-import { action, computed, makeObservable, observable, remove } from "mobx";
+import {
+  action,
+  computed,
+  makeObservable,
+  observable,
+  remove,
+  runInAction,
+} from "mobx";
 import type { RootStore } from "../RootStore";
 import { Employee } from "./Employee";
 import { Department } from "./Department";
@@ -67,6 +74,23 @@ export class Company {
   @action
   addEmployee(employee: IEmployee) {
     this._employees[employee.id] = new Employee(employee);
+  }
+
+  @action
+  addDepartment(department: IDepartment) {
+    this._departments[department.id] = new Department(
+      this.rootStore,
+      department
+    );
+  }
+
+  @action
+  addEmployees(employees: IEmployee[]) {
+    runInAction(() => {
+      employees.forEach((employee) => {
+        this.addEmployee(employee);
+      });
+    });
   }
 
   @computed

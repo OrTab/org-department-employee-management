@@ -29,7 +29,10 @@ export const useEmployeesPage = () => {
   const handleDeleteEmployee = useCallback(
     async (employeeId: string) => {
       try {
-        await companyController.deleteEmployee(employeeId, selectedCompanyId);
+        await companyController.deleteEmployee({
+          companyId: selectedCompanyId,
+          employeeId,
+        });
         message.success("Employee deleted successfully");
       } catch {
         message.error("Failed to delete employee");
@@ -58,7 +61,14 @@ export const useEmployeesPage = () => {
   const handleAddEmployee = useCallback(async () => {
     try {
       const values = await form.validateFields();
-      await companyController.addEmployee(values, selectedCompanyId);
+      await companyController.addEmployee({
+        employee: {
+          name: values.name,
+          email: values.email,
+          departmentId: values.departmentId,
+        },
+        companyId: selectedCompanyId,
+      });
       message.success("Employee added successfully");
       handleCloseModal();
     } catch {

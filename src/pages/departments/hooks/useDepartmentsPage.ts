@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 import { useAppContext } from "../../../hooks/useAppContext";
-import { message, Modal } from "antd";
+import { Form, message, Modal } from "antd";
 
 export const useDepartmentsPage = () => {
   const {
@@ -19,15 +19,17 @@ export const useDepartmentsPage = () => {
   >(null);
   const [targetDepartment, setTargetDepartment] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [isAddModalVisible, setIsAddModalVisible] = useState(false);
+  const [form] = Form.useForm();
 
   const handleDelete = useCallback(
     async (departmentId: string) => {
       try {
         setLoading(true);
-        await companyController.deleteDepartment(
+        await companyController.deleteDepartment({
+          companyId: selectedCompanyId,
           departmentId,
-          selectedCompanyId
-        );
+        });
         message.success("Department deleted successfully!");
       } catch {
         message.error("Failed to delete department!");
@@ -62,10 +64,10 @@ export const useDepartmentsPage = () => {
     }
     try {
       setLoading(true);
-      await companyController.deleteDepartmentEmployees(
-        selectedDepartmentId,
-        selectedCompanyId
-      );
+      await companyController.deleteDepartmentEmployees({
+        companyId: selectedCompanyId,
+        departmentId: selectedDepartmentId,
+      });
       message.success("Employees deleted successfully!");
       showDeleteConfirmation(selectedDepartmentId);
     } catch {
@@ -84,11 +86,11 @@ export const useDepartmentsPage = () => {
     if (!selectedDepartmentId || !targetDepartment) return;
     try {
       setLoading(true);
-      await companyController.moveEmployeesToDepartment(
-        selectedDepartmentId,
-        targetDepartment,
-        selectedCompanyId
-      );
+      await companyController.moveEmployeesToDepartment({
+        companyId: selectedCompanyId,
+        departmentId: selectedDepartmentId,
+        targetDepartmentId: targetDepartment,
+      });
       message.success("Employees moved successfully!");
       showDeleteConfirmation(selectedDepartmentId);
     } catch {
@@ -129,6 +131,38 @@ export const useDepartmentsPage = () => {
     [selectedCompany.departmentsById, showDeleteConfirmation]
   );
 
+  const handleCloseAddDepartmentModal = useCallback(() => {
+    setIsAddModalVisible(false);
+    form.resetFields();
+  }, [form]);
+
+  const addNewDepartment = useCallback(async () => {
+    try {
+      setLoading(true);
+      const values = await form.validateFields();
+      await companyController.addDepartment({
+        department: { name: values.name },
+        companyId: selectedCompanyId,
+        shouldAddDummyEmployees: values.addDummyEmployees,
+      });
+      message.success("Department added successfully!");
+      handleCloseAddDepartmentModal();
+    } catch {
+      message.error("Failed to add department!");
+    } finally {
+      setLoading(false);
+    }
+  }, [
+    companyController,
+    form,
+    handleCloseAddDepartmentModal,
+    selectedCompanyId,
+  ]);
+
+  const handleOpenAddDepartmentModal = useCallback(() => {
+    setIsAddModalVisible(true);
+  }, []);
+
   const selectedDepartment = selectedDepartmentId
     ? selectedCompany.departmentsById[selectedDepartmentId]
     : undefined;
@@ -145,5 +179,10 @@ export const useDepartmentsPage = () => {
     departments,
     setActionForEmployees,
     setTargetDepartment,
+    isAddModalVisible,
+    addNewDepartment,
+    handleCloseAddDepartmentModal,
+    form,
+    handleOpenAddDepartmentModal,
   };
 };
