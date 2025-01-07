@@ -3,6 +3,7 @@ import { Table, Button, TableColumnsType } from "antd";
 import { useDepartmentsPage } from "./hooks/useDepartmentsPage";
 import { DepartmentActionModal } from "./components/DepartmentActionModal";
 import { AddDepartmentModal } from "./components/AddDepartmentModal";
+import styled from "styled-components";
 
 export const DepartmentsPage = observer(() => {
   const {
@@ -54,10 +55,10 @@ export const DepartmentsPage = observer(() => {
   ];
 
   return (
-    <>
-      <Button type='primary' onClick={handleOpenAddDepartmentModal}>
+    <Container>
+      <AddButton type='primary' onClick={handleOpenAddDepartmentModal}>
         Add Department
-      </Button>
+      </AddButton>
       <Table
         scroll={{ x: "max-content" }}
         columns={columns}
@@ -82,6 +83,21 @@ export const DepartmentsPage = observer(() => {
         onOk={onConfirmAction}
         onCancel={handleClose}
       />
-    </>
+    </Container>
   );
 });
+
+/// STYLES ///
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 20px;
+`;
+
+const AddButton = styled(Button)`
+  && {
+    align-self: flex-start;
+  }
+`;
