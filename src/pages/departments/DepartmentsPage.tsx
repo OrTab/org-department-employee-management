@@ -3,7 +3,7 @@ import { Table, Button, TableColumnsType } from "antd";
 import { useDepartmentsPage } from "./hooks/useDepartmentsPage";
 import { DepartmentActionModal } from "./components/DepartmentActionModal";
 
-const DepartmentsPage = observer(() => {
+export const DepartmentsPage = observer(() => {
   const {
     selectedDepartmentId,
     selectedDepartment,
@@ -70,5 +70,3 @@ const DepartmentsPage = observer(() => {
     </>
   );
 });
-
-export default DepartmentsPage;

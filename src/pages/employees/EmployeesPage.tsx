@@ -7,7 +7,7 @@ import { AddEmployeeModal } from "./components/AddEmployeeModal";
 import { TableHeader } from "./hooks/TableHeader";
 import { useMemo } from "react";
 
-const EmployeesPage = observer(() => {
+export const EmployeesPage = observer(() => {
   const {
     employees,
     setSearchText,
@@ -109,5 +109,3 @@ const PageContainer = styled.div`
   flex-direction: column;
   gap: 20px;
 `;
-
-export default EmployeesPage;
