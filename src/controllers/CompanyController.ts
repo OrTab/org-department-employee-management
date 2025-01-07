@@ -2,6 +2,7 @@ import { dummyCompanies } from "../dummyData";
 import { CompanyService } from "../services/CompanyService";
 import type { Employee } from "../store/entities/Employee";
 import type { RootStore } from "../store/RootStore";
+import { ICompany, IEmployee } from "../types";
 
 export class CompanyController {
   readonly rootStore: RootStore;

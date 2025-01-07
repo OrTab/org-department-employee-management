@@ -1,3 +1,5 @@
+import { ICompany, IDepartment, IEmployee } from "./types";
+
 const companyNames = [
   "Microsoft",
   "Apple",
