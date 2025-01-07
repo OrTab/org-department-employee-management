@@ -1,56 +1,111 @@
 import { observer } from "mobx-react-lite";
 import { useAppContext } from "../../../hooks/useAppContext";
-import { Table, Button, Modal, Select, message } from "antd";
-import { useState } from "react";
+import { Table, Button, Modal, Select, message, TableColumnsType } from "antd";
+import { useState, useCallback } from "react";
+import styled from "styled-components";
 
 export const DepartmentsPage = observer(() => {
   const {
     rootStore: {
-      companyStore: { selectedCompany },
+      companyStore: { selectedCompany, selectedCompanyId },
     },
     rootController: { companyController },
   } = useAppContext();
   const { departments } = selectedCompany;
+
   const [selectedDepartmentId, setSelectedDepartmentId] = useState<
     string | null
   >(null);
-  const [actionForEmployees, setActionForEmployees] = useState(null); // 'delete' or 'move'
-  const [targetDepartment, setTargetDepartment] = useState(null);
+  const [actionForEmployees, setActionForEmployees] = useState<
+    "delete" | "move" | null
+  >(null);
+  const [targetDepartment, setTargetDepartment] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  const handleDelete = async (departmentId: string) => {
-    try {
-      await companyController.deleteDepartment(departmentId);
-      message.success("Department deleted successfully!");
-    } catch (error) {
-      console.error(error);
-      message.error("Failed to delete department!");
-    }
-  };
+  const handleDelete = useCallback(
+    async (departmentId: string) => {
+      try {
+        setLoading(true);
+        await companyController.deleteDepartment(
+          departmentId,
+          selectedCompanyId
+        );
+        message.success("Department deleted successfully!");
+      } catch (error) {
+        console.error(error);
+        message.error("Failed to delete department!");
+      } finally {
+        setLoading(false);
+      }
+    },
+    [companyController, selectedCompanyId]
+  );
 
-  const handleDeleteEmployees = async () => {
+  const handleClose = useCallback(() => {
+    setSelectedDepartmentId(null);
+    setActionForEmployees(null);
+    setTargetDepartment(null);
+  }, []);
+
+  const showDeleteConfirmation = useCallback(
+    (departmentId: string) => {
+      Modal.confirm({
+        title: "Are you sure you want to delete this department?",
+        content: `Department: ${selectedCompany.departmentsById[departmentId].name}`,
+        onOk: () => handleDelete(departmentId),
+        onCancel: handleClose,
+      });
+    },
+    [handleDelete, handleClose, selectedCompany.departmentsById]
+  );
+
+  const handleDeleteEmployees = useCallback(async () => {
+    if (!selectedDepartmentId) return;
     try {
-      await companyController.deleteDepartmentEmployees(selectedDepartmentId!);
+      setLoading(true);
+      await companyController.deleteDepartmentEmployees(
+        selectedDepartmentId,
+        selectedCompanyId
+      );
       message.success("Employees deleted successfully!");
-      showDeleteConfirmation(selectedDepartmentId!);
+      showDeleteConfirmation(selectedDepartmentId);
     } catch (error) {
       console.error(error);
       message.error("Failed to delete employees!");
+    } finally {
+      setLoading(false);
     }
-  };
+  }, [
+    companyController,
+    selectedCompanyId,
+    selectedDepartmentId,
+    showDeleteConfirmation,
+  ]);
 
-  const handleMoveEmployees = async () => {
+  const handleMoveEmployees = useCallback(async () => {
+    if (!selectedDepartmentId || !targetDepartment) return;
     try {
+      setLoading(true);
       await companyController.moveEmployeesToDepartment(
-        selectedDepartmentId!,
-        targetDepartment!
+        selectedDepartmentId,
+        targetDepartment,
+        selectedCompanyId
       );
       message.success("Employees moved successfully!");
-      showDeleteConfirmation(selectedDepartmentId!);
+      showDeleteConfirmation(selectedDepartmentId);
     } catch (error) {
       console.error(error);
       message.error("Failed to move employees!");
+    } finally {
+      setLoading(false);
     }
-  };
+  }, [
+    companyController,
+    selectedCompanyId,
+    selectedDepartmentId,
+    showDeleteConfirmation,
+    targetDepartment,
+  ]);
 
   const onConfirmAction = () => {
     if (actionForEmployees === "delete") {
@@ -58,14 +113,6 @@ export const DepartmentsPage = observer(() => {
     } else if (actionForEmployees === "move" && targetDepartment) {
       handleMoveEmployees();
     }
-  };
-
-  const showDeleteConfirmation = (departmentId: string) => {
-    Modal.confirm({
-      title: `Are you sure you want to delete this department? (${selectedCompany.departmentsById[departmentId].name})`,
-      onOk: () => handleDelete(departmentId),
-      onCancel: handleClose,
-    });
   };
 
   const handleDeleteClick = (departmentId: string) => {
@@ -77,23 +124,18 @@ export const DepartmentsPage = observer(() => {
     }
   };
 
-  const handleClose = () => {
-    setSelectedDepartmentId(null);
-    setActionForEmployees(null);
-    setTargetDepartment(null);
-  };
-
   const dataSource = departments.map((department) => ({
     key: department.id,
     name: department.name,
     employees: department.employees.length,
   }));
 
-  const columns = [
+  const columns: TableColumnsType<any> = [
     {
       title: "Department",
       dataIndex: "name",
       key: "name",
+      fixed: "left",
     },
     {
       title: "Employees Number",
@@ -101,10 +143,11 @@ export const DepartmentsPage = observer(() => {
       key: "employees",
     },
     {
+      title: "Actions",
       key: "delete",
       render: (_: string, { key }: { key: string }) => (
         <Button type='primary' danger onClick={() => handleDeleteClick(key)}>
-          Delete Department
+          Delete
         </Button>
       ),
     },
@@ -116,32 +159,38 @@ export const DepartmentsPage = observer(() => {
 
   return (
     <>
-      <Table columns={columns} dataSource={dataSource} />
+      <Table
+        scroll={{ x: "max-content" }}
+        columns={columns}
+        dataSource={dataSource}
+        pagination={false}
+      />
       <Modal
         title='Manage Employees Before Deleting Department'
         open={!!selectedDepartment}
         onOk={onConfirmAction}
         onCancel={handleClose}
+        confirmLoading={loading}
       >
         <p>This department has employees. What would you like to do?</p>
-        <Select
-          style={{ width: "100%" }}
+        <FullWidthSelect
           placeholder='Select action for employees'
           value={actionForEmployees}
-          onChange={(value) => setActionForEmployees(value)}
+          onChange={(value) =>
+            setActionForEmployees(value as "delete" | "move")
+          }
         >
           <Select.Option value='delete'>Delete all employees</Select.Option>
           <Select.Option value='move'>
             Move employees to another department
           </Select.Option>
-        </Select>
+        </FullWidthSelect>
 
         {actionForEmployees === "move" && (
-          <Select
-            style={{ width: "100%" }}
+          <FullWidthSelect
             placeholder='Select target department'
             value={targetDepartment}
-            onChange={(value) => setTargetDepartment(value)}
+            onChange={(value) => setTargetDepartment(value as string)}
             options={departments
               .filter((department) => department.id !== selectedDepartmentId)
               .map((department) => ({
@@ -154,3 +203,11 @@ export const DepartmentsPage = observer(() => {
     </>
   );
 });
+
+//// STYLES ////
+
+const FullWidthSelect = styled(Select)`
+  && {
+    width: 100%;
+  }
+`;
