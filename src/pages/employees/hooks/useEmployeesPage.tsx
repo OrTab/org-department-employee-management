@@ -70,7 +70,7 @@ export const useEmployeesPage = () => {
     () =>
       selectedDepartments.length
         ? selectedDepartments.reduce<Employee[]>((acc, departmentId) => {
-            acc.push(...employeesByDepartmentId[departmentId]);
+            acc.push(...(employeesByDepartmentId[departmentId] || []));
             return acc;
           }, [])
         : employees,
@@ -89,7 +89,7 @@ export const useEmployeesPage = () => {
     [_employees, searchText]
   );
 
-  const debouncedSearch = useCallback(debounce(setSearchText, 300), []);
+  const debouncedSearch = useMemo(() => debounce(setSearchText, 300), []);
 
   return {
     employees: filteredEmployees,

@@ -9,7 +9,11 @@ export class CompanyService {
     return `${this.COMPANY_PREFIX}${id}`;
   }
 
-  static async getCompanies(): Promise<Record<string, ICompany> | null> {
+  static async getCompanies(
+    delay = 0
+  ): Promise<Record<string, ICompany> | null> {
+    // imitate loading
+    await new Promise((resolve) => setTimeout(resolve, delay));
     const companyIds = (await this.getCompaniesList()) || [];
     const companies: Record<string, ICompany> = {};
     if (!companyIds.length) {

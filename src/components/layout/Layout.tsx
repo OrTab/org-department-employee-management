@@ -1,10 +1,11 @@
-import { Layout as AntLayout, Spin } from "antd";
+import { Layout as AntLayout } from "antd";
 import { useLocation } from "react-router-dom";
 import { useAppContext } from "../../hooks/useAppContext";
 import { observer } from "mobx-react-lite";
 import styled from "styled-components";
 import { Header } from "./Header";
 import { Sidebar } from "./Sidebar";
+import { PageLoader } from "../PageLoader";
 
 const { Content: _Content } = AntLayout;
 
@@ -12,17 +13,15 @@ export const Layout = observer(
   ({ children }: { children: React.ReactNode }) => {
     const {
       rootStore: {
-        companyStore: { isLoaded, selectedCompanyId },
+        companyStore: { shouldShowPageLoader },
       },
     } = useAppContext();
     const location = useLocation();
 
     const currentPage = location.pathname.split("/").pop()!;
 
-    return !isLoaded || !selectedCompanyId ? (
-      <SpinContainer>
-        <Spin size='large' />
-      </SpinContainer>
+    return shouldShowPageLoader ? (
+      <PageLoader />
     ) : (
       <MainLayout>
         <Header currentPage={currentPage} />
@@ -39,13 +38,6 @@ export const Layout = observer(
 
 const MainLayout = styled(AntLayout)`
   min-height: 100vh;
-`;
-
-const SpinContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
 `;
 
 const Content = styled(_Content)`

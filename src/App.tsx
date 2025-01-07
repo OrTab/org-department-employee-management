@@ -3,8 +3,8 @@ import { Layout } from "./components/layout/Layout";
 import { AppContextProvider } from "./context/AppContextProvider";
 import { useInitApp } from "./hooks/useInitApp";
 import { observer } from "mobx-react-lite";
-import { Spin } from "antd";
 import { lazy, Suspense } from "react";
+import { PageLoader } from "./components/PageLoader";
 
 const DepartmentsPage = lazy(
   () => import("./pages/departments/DepartmentsPage")
@@ -26,7 +26,7 @@ const App = observer(() => {
 
   return (
     <Layout>
-      <Suspense fallback={<Spin size='large' />}>
+      <Suspense fallback={<PageLoader />}>
         <Routes>
           <Route
             path='/company/:companyId/departments'
@@ -36,7 +36,7 @@ const App = observer(() => {
             path='/company/:companyId/employees'
             element={<EmployeesPage />}
           />
-          {/* { we have redirect to /company/:companyId/departments in useInitApp */}
+          {/*  we have redirect to /company/:companyId/departments in useInitApp */}
           <Route path='*' element={<></>} />
         </Routes>
       </Suspense>

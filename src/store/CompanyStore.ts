@@ -41,4 +41,9 @@ export class CompanyStore extends BaseEntityStore<Company, ICompany> {
   get selectedCompany() {
     return this.companies[this.selectedCompanyId!];
   }
+
+  @computed
+  get shouldShowPageLoader() {
+    return !this.isLoaded || !this.selectedCompanyId;
+  }
 }

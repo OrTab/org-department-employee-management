@@ -12,7 +12,7 @@ export class CompanyController {
   }
 
   async loadCompanies() {
-    let companies = await CompanyService.getCompanies();
+    let companies = await CompanyService.getCompanies(500);
     if (!companies) {
       companies = dummyCompanies;
       await CompanyService.saveCompanies(companies);

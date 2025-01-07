@@ -34,10 +34,7 @@ export const useInitApp = () => {
       if (!companyId || !companies[companyId]) {
         _companyId = Object.keys(companies)[0];
       }
-      // imitate loading
-      setTimeout(() => {
-        setSelectedCompanyId(_companyId);
-      }, 1000);
+      setSelectedCompanyId(_companyId);
     }
   }, [
     paths,
@@ -57,5 +54,7 @@ export const useInitApp = () => {
     const route =
       ROUTES.find((route) => route.key === path)?.key || "departments";
     navigate(`company/${selectedCompanyId}/${route}`);
+    // no need paths in deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigate, selectedCompanyId]);
 };
