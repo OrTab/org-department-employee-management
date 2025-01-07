@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { HashRouter, Route, Routes } from "react-router-dom";
 import { Layout } from "./components/layout/Layout";
 import { AppContextProvider } from "./context/AppContextProvider";
 import { useInitApp } from "./hooks/useInitApp";
@@ -13,11 +13,11 @@ const EmployeesPage = lazy(() => import("./pages/employees/EmployeesPage"));
 
 const AppWrapper = () => {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <AppContextProvider>
         <App />
       </AppContextProvider>
-    </BrowserRouter>
+    </HashRouter>
   );
 };
 
@@ -36,6 +36,8 @@ const App = observer(() => {
             path='/company/:companyId/employees'
             element={<EmployeesPage />}
           />
+          {/* { we have redirect to /company/:companyId/departments in useInitApp */}
+          <Route path='*' element={<></>} />
         </Routes>
       </Suspense>
     </Layout>
