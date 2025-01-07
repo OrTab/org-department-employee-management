@@ -19,56 +19,85 @@ export class CompanyController {
     this.rootStore.companyStore.setCompanies(companies);
   }
 
-  async deleteDepartment(departmentId: string) {
-    const { selectedCompanyId, selectedCompany } = this.rootStore.companyStore;
-    const company = await CompanyService.getCompany(selectedCompanyId);
+  async deleteDepartment(departmentId: string, companyId: string) {
+    const company = await CompanyService.getCompany(companyId);
     if (!company) {
       return;
     }
     delete company.departments[departmentId];
     await CompanyService.updateCompany(company);
-    selectedCompany.deleteDepartment(departmentId);
+    this.rootStore.companyStore.companies[companyId].deleteDepartment(
+      departmentId
+    );
   }
 
   private async processEmployeesInDepartment(
     departmentId: string,
+    companyId: string,
     processEmployee: (employee: Employee, company: ICompany) => void
   ) {
-    const { selectedCompanyId, selectedCompany } = this.rootStore.companyStore;
-    const company = await CompanyService.getCompany(selectedCompanyId);
+    const { companies } = this.rootStore.companyStore;
+    const company = await CompanyService.getCompany(companyId);
     if (!company) {
       return;
     }
-    const employees = selectedCompany.employeesByDepartmentId[departmentId];
+    const employees =
+      companies[companyId].employeesByDepartmentId[departmentId];
     for (const employee of employees) {
       processEmployee(employee, company);
     }
     return CompanyService.updateCompany(company);
   }
 
-  async deleteDepartmentEmployees(departmentId: string) {
+  async deleteDepartmentEmployees(departmentId: string, companyId: string) {
     return this.processEmployeesInDepartment(
       departmentId,
+      companyId,
       (employee, company) => {
         delete company.employees[employee.id];
-        this.rootStore.companyStore.selectedCompany.deleteEmployee(employee.id);
+        this.rootStore.companyStore.companies[companyId].deleteEmployee(
+          employee.id
+        );
       }
     );
   }
 
   async moveEmployeesToDepartment(
     departmentId: string,
-    targetDepartmentId: string
+    targetDepartmentId: string,
+    companyId: string
   ) {
     return this.processEmployeesInDepartment(
       departmentId,
+      companyId,
       (employee, company) => {
         company.employees[employee.id].departmentId = targetDepartmentId;
-        this.rootStore.companyStore.selectedCompany.moveEmployeeToDepartment(
-          employee.id,
-          targetDepartmentId
-        );
+        this.rootStore.companyStore.companies[
+          companyId
+        ].moveEmployeeToDepartment(employee.id, targetDepartmentId);
       }
     );
+  }
+
+  async deleteEmployee(employeeId: string, companyId: string) {
+    const company = await CompanyService.getCompany(companyId);
+    if (!company) {
+      return;
+    }
+    delete company.employees[employeeId];
+    await CompanyService.updateCompany(company);
+    this.rootStore.companyStore.companies[companyId].deleteEmployee(employeeId);
+  }
+
+  async addEmployee(employee: IEmployee, companyId: string) {
+    const company = await CompanyService.getCompany(companyId);
+    if (!company) {
+      return;
+    }
+    employee.id = crypto.randomUUID();
+    employee.companyId = companyId;
+    company.employees[employee.id] = employee;
+    await CompanyService.updateCompany(company);
+    this.rootStore.companyStore.companies[companyId].addEmployee(employee);
   }
 }

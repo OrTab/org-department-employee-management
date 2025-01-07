@@ -26,7 +26,6 @@ function generateDummyEmployee(
     id: Math.random().toString(36).substring(2, 11),
     name: `Employee ${Math.floor(Math.random() * 100)}`,
     email: `email${Math.floor(Math.random() * 100)}@example.com`,
-    phone: `Phone ${Math.floor(Math.random() * 100)}`,
     departmentId: departmentId,
     companyId: companyId,
   };

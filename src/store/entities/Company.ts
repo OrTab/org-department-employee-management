@@ -63,9 +63,19 @@ export class Company {
     this._employees[employeeId].departmentId = departmentId;
   }
 
+  @action
+  addEmployee(employee: IEmployee) {
+    this._employees[employee.id] = new Employee(employee);
+  }
+
   @computed
   get employees() {
     return Object.values(this._employees);
+  }
+
+  @computed
+  get employeesById() {
+    return this._employees;
   }
 
   @computed
