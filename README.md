@@ -43,7 +43,7 @@ The project uses GitHub Actions for continuous integration and deployment:
 - Automatic build process
 - Deployment to GitHub Pages when tests pass
 
-View the deployed application at: [https://ortab.github.io/org-department-employee-management](https://ortab.github.io/org-department-employee-management){target="\_blank"}
+View the deployed application at: [https://ortab.github.io/org-department-employee-management](https://ortab.github.io/org-department-employee-management)
 
 ## Project Structure
 
