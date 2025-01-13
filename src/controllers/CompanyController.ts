@@ -115,15 +115,27 @@ export class CompanyController {
     companyId: string;
   }) {
     const company = await this.getCompany({ companyId });
-    const newEmployee = {} as IEmployee;
-    newEmployee.id = crypto.randomUUID();
-    newEmployee.companyId = companyId;
-    newEmployee.name = employee.name.trim();
-    newEmployee.email = employee.email.trim();
-    newEmployee.departmentId = employee.departmentId;
+    const newEmployee = this.createEmployee({ employee, companyId });
+
     company.employees[newEmployee.id] = newEmployee;
     await CompanyService.updateCompany(company);
     this.rootStore.companyStore.companies[companyId].addEmployee(newEmployee);
+  }
+
+  private createEmployee({
+    employee: { departmentId, name, email },
+    companyId,
+  }: {
+    employee: { name: string; email: string; departmentId: string };
+    companyId: string;
+  }): IEmployee {
+    return {
+      id: crypto.randomUUID(),
+      companyId,
+      name: name.trim(),
+      email: email.trim(),
+      departmentId: departmentId,
+    };
   }
 
   private async getCompany({ companyId }: { companyId: string }) {
