@@ -1,6 +1,6 @@
-import { createContext } from "react";
-import type { RootStore } from "../store/RootStore";
-import { RootController } from "../controllers/RootController";
+import { createContext } from 'react';
+import type { RootStore } from '../store/RootStore';
+import { RootController } from '../controllers/RootController';
 
 export type AppContextValue = {
   rootStore: RootStore;

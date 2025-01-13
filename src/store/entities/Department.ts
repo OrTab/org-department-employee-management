@@ -1,6 +1,6 @@
-import { computed } from "mobx";
-import type { RootStore } from "../RootStore";
-import { IDepartment } from "../../types";
+import { computed } from 'mobx';
+import type { RootStore } from '../RootStore';
+import { IDepartment } from '../../types';
 
 export class Department {
   private readonly rootStore: RootStore;

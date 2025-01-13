@@ -1,7 +1,7 @@
-import styled from "styled-components";
-import { mediumUp } from "../../../style/breakpoints";
-import { Button, Input, Select } from "antd";
-import { Department } from "../../../store/entities/Department";
+import styled from 'styled-components';
+import { mediumUp } from '../../../style/breakpoints';
+import { Button, Input, Select } from 'antd';
+import { Department } from '../../../store/entities/Department';
 
 type Props = {
   setSearchText: (value: string) => void;
@@ -21,13 +21,13 @@ export const TableHeader = ({
   return (
     <Container>
       <FilterSearchInput
-        placeholder='Search employees by name or email'
+        placeholder="Search employees by name or email"
         onChange={(e) => setSearchText(e.target.value)}
       />
       <DepartmentSelect
-        placeholder='Filter by department'
+        placeholder="Filter by department"
         allowClear
-        mode='multiple'
+        mode="multiple"
         value={selectedDepartments}
         onChange={(value) => setSelectedDepartments(value as string[])}
         filterOption={(input, option) =>
@@ -39,7 +39,7 @@ export const TableHeader = ({
         }))}
         maxTagCount={2}
       />
-      <Button type='primary' onClick={() => setIsAddModalVisible(true)}>
+      <Button type="primary" onClick={() => setIsAddModalVisible(true)}>
         Add Employee
       </Button>
     </Container>

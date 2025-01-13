@@ -1,9 +1,9 @@
-import { debounce } from "../utils";
+import { debounce } from '../utils';
 
-describe("debounce", () => {
+describe('debounce', () => {
   jest.useFakeTimers();
 
-  it("should debounce function calls", () => {
+  it('should debounce function calls', () => {
     const func = jest.fn();
     const debouncedFunc = debounce(func, 1000);
 

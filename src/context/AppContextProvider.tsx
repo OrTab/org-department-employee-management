@@ -1,7 +1,7 @@
-import { useMemo } from "react";
-import { appContext } from "./appContext";
-import { RootStore } from "../store/RootStore";
-import { RootController } from "../controllers/RootController";
+import { useMemo } from 'react';
+import { appContext } from './appContext';
+import { RootStore } from '../store/RootStore';
+import { RootController } from '../controllers/RootController';
 
 export const AppContextProvider = ({
   children,

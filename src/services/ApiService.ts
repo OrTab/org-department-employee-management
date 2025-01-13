@@ -1,4 +1,4 @@
-import { StorageService } from "./StorageService";
+import { StorageService } from './StorageService';
 
 export class ApiService {
   static async get<T>(key: string, defaultValue?: T): Promise<T | undefined> {

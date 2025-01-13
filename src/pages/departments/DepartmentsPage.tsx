@@ -1,9 +1,9 @@
-import { observer } from "mobx-react-lite";
-import { Table, Button, TableColumnsType } from "antd";
-import { useDepartmentsPage } from "./hooks/useDepartmentsPage";
-import { DepartmentActionModal } from "./components/DepartmentActionModal";
-import { AddDepartmentModal } from "./components/AddDepartmentModal";
-import styled from "styled-components";
+import { observer } from 'mobx-react-lite';
+import { Table, Button, TableColumnsType } from 'antd';
+import { useDepartmentsPage } from './hooks/useDepartmentsPage';
+import { DepartmentActionModal } from './components/DepartmentActionModal';
+import { AddDepartmentModal } from './components/AddDepartmentModal';
+import styled from 'styled-components';
 
 export const DepartmentsPage = observer(() => {
   const {
@@ -33,21 +33,21 @@ export const DepartmentsPage = observer(() => {
 
   const columns: TableColumnsType<any> = [
     {
-      title: "Department",
-      dataIndex: "name",
-      key: "name",
-      fixed: "left",
+      title: 'Department',
+      dataIndex: 'name',
+      key: 'name',
+      fixed: 'left',
     },
     {
-      title: "Employees Number",
-      dataIndex: "employees",
-      key: "employees",
+      title: 'Employees Number',
+      dataIndex: 'employees',
+      key: 'employees',
     },
     {
-      title: "Actions",
-      key: "delete",
+      title: 'Actions',
+      key: 'delete',
       render: (_: string, { key }: { key: string }) => (
-        <Button type='primary' danger onClick={() => handleDeleteClick(key)}>
+        <Button type="primary" danger onClick={() => handleDeleteClick(key)}>
           Delete
         </Button>
       ),
@@ -56,11 +56,11 @@ export const DepartmentsPage = observer(() => {
 
   return (
     <Container>
-      <AddButton type='primary' onClick={handleOpenAddDepartmentModal}>
+      <AddButton type="primary" onClick={handleOpenAddDepartmentModal}>
         Add Department
       </AddButton>
       <Table
-        scroll={{ x: "max-content" }}
+        scroll={{ x: 'max-content' }}
         columns={columns}
         dataSource={dataSource}
         pagination={false}

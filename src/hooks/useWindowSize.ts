@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { breakpoints } from "../style/breakpoints";
+import { useState, useEffect } from 'react';
+import { breakpoints } from '../style/breakpoints';
 
 export interface IWindowSize {
   width: number;
@@ -21,8 +21,8 @@ export function useWindowSize() {
       setWindowSize(getSize());
     }
 
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   return {

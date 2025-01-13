@@ -1,10 +1,10 @@
-import styled from "styled-components";
-import { Layout, Menu } from "antd";
-import { useWindowSize } from "../../hooks/useWindowSize";
-import { useNavigate } from "react-router-dom";
-import { useAppContext } from "../../hooks/useAppContext";
-import { ROUTES } from "../../routes";
-import { useState } from "react";
+import styled from 'styled-components';
+import { Layout, Menu } from 'antd';
+import { useWindowSize } from '../../hooks/useWindowSize';
+import { useNavigate } from 'react-router-dom';
+import { useAppContext } from '../../hooks/useAppContext';
+import { ROUTES } from '../../routes';
+import { useState } from 'react';
 
 const { Sider } = Layout;
 
@@ -35,7 +35,7 @@ export const Sidebar = ({ currentPage }: Props) => {
     >
       <PagesMenu
         selectedKeys={[currentPage]}
-        mode='inline'
+        mode="inline"
         items={ROUTES.map((route) => ({
           key: route.key,
           label: route.label,

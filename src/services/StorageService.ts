@@ -1,8 +1,8 @@
-type StorageType = "localStorage" | "sessionStorage";
+type StorageType = 'localStorage' | 'sessionStorage';
 
 class StorageService {
   static getStorage<T>({
-    storageType = "localStorage",
+    storageType = 'localStorage',
     key,
     defaultValue,
   }: {
@@ -19,7 +19,7 @@ class StorageService {
   }
 
   static setStorage<T>({
-    storageType = "localStorage",
+    storageType = 'localStorage',
     key,
     value,
   }: {

@@ -1,8 +1,8 @@
-import { StorageService } from "../services/StorageService";
+import { StorageService } from '../services/StorageService';
 
-describe("StorageService", () => {
-  const mockData = { test: "data" };
-  const key = "testKey";
+describe('StorageService', () => {
+  const mockData = { test: 'data' };
+  const key = 'testKey';
 
   beforeEach(() => {
     localStorage.clear();
@@ -10,8 +10,8 @@ describe("StorageService", () => {
     jest.clearAllMocks();
   });
 
-  describe("getStorage", () => {
-    it("should get item from localStorage", () => {
+  describe('getStorage', () => {
+    it('should get item from localStorage', () => {
       localStorage.setItem(key, JSON.stringify(mockData));
 
       const result = StorageService.getStorage({ key });
@@ -28,8 +28,8 @@ describe("StorageService", () => {
       expect(result).toEqual(defaultValue);
     });
 
-    it("should handle invalid JSON", () => {
-      localStorage.setItem(key, "invalid json");
+    it('should handle invalid JSON', () => {
+      localStorage.setItem(key, 'invalid json');
       const defaultValue = { default: true };
 
       const result = StorageService.getStorage({
@@ -40,17 +40,17 @@ describe("StorageService", () => {
     });
   });
 
-  describe("setStorage", () => {
-    it("should set item in localStorage", () => {
+  describe('setStorage', () => {
+    it('should set item in localStorage', () => {
       StorageService.setStorage({ key, value: mockData });
 
       const storedItem = localStorage.getItem(key);
       expect(JSON.parse(storedItem!)).toEqual(mockData);
     });
 
-    it("should handle sessionStorage", () => {
+    it('should handle sessionStorage', () => {
       StorageService.setStorage({
-        storageType: "sessionStorage",
+        storageType: 'sessionStorage',
         key,
         value: mockData,
       });

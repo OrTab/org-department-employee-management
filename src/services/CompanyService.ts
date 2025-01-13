@@ -1,9 +1,9 @@
-import { ICompany } from "../types";
-import { ApiService } from "./ApiService";
+import { ICompany } from '../types';
+import { ApiService } from './ApiService';
 
 export class CompanyService {
-  static readonly COMPANIES_LIST_KEY = "companiesIds";
-  static readonly COMPANY_PREFIX = "company_";
+  static readonly COMPANIES_LIST_KEY = 'companiesIds';
+  static readonly COMPANY_PREFIX = 'company_';
 
   static getCompanyKey(id: string) {
     return `${this.COMPANY_PREFIX}${id}`;

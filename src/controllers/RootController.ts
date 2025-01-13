@@ -1,5 +1,5 @@
-import type { RootStore } from "../store/RootStore";
-import { CompanyController } from "./CompanyController";
+import type { RootStore } from '../store/RootStore';
+import { CompanyController } from './CompanyController';
 
 export class RootController {
   readonly companyController: CompanyController;

@@ -1,5 +1,5 @@
-import { Form, FormInstance, Input, Modal, Select } from "antd";
-import { Department } from "../../../store/entities/Department";
+import { Form, FormInstance, Input, Modal, Select } from 'antd';
+import { Department } from '../../../store/entities/Department';
 
 type Props = {
   isAddModalVisible: boolean;
@@ -18,15 +18,15 @@ export const AddEmployeeModal = ({
 }: Props) => {
   return (
     <Modal
-      title='Add Employee'
+      title="Add Employee"
       open={isAddModalVisible}
       onOk={handleAddEmployee}
       onCancel={handleCloseModal}
     >
-      <Form form={form} layout='vertical'>
+      <Form form={form} layout="vertical">
         <Form.Item
-          label='Name'
-          name='name'
+          label="Name"
+          name="name"
           rules={[
             { required: true, message: "Please input the employee's name!" },
           ]}
@@ -34,22 +34,22 @@ export const AddEmployeeModal = ({
           <Input />
         </Form.Item>
         <Form.Item
-          label='Email'
-          name='email'
+          label="Email"
+          name="email"
           rules={[
             { required: true, message: "Please input the employee's email!" },
-            { type: "email", message: "Please enter a valid email!" },
+            { type: 'email', message: 'Please enter a valid email!' },
           ]}
         >
           <Input />
         </Form.Item>
         <Form.Item
-          label='Department'
-          name='departmentId'
-          rules={[{ required: true, message: "Please select a department!" }]}
+          label="Department"
+          name="departmentId"
+          rules={[{ required: true, message: 'Please select a department!' }]}
         >
           <Select
-            placeholder='Select a department'
+            placeholder="Select a department"
             options={departments.map((department) => ({
               value: department.id,
               label: department.name,

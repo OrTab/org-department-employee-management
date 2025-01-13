@@ -1,8 +1,8 @@
-import styled from "styled-components";
-import { mediumUp } from "../../style/breakpoints";
-import { Layout, Select } from "antd";
-import { observer } from "mobx-react-lite";
-import { useAppContext } from "../../hooks/useAppContext";
+import styled from 'styled-components';
+import { mediumUp } from '../../style/breakpoints';
+import { Layout, Select } from 'antd';
+import { observer } from 'mobx-react-lite';
+import { useAppContext } from '../../hooks/useAppContext';
 
 const { Header: _Header } = Layout;
 
@@ -29,7 +29,7 @@ export const Header = observer(({ currentPage }: Props) => {
           {selectedCompany.name} {currentPage}
         </Title>
         <CompaniesSelect
-          placeholder='Select a company'
+          placeholder="Select a company"
           value={selectedCompanyId}
           onChange={(companyId) => setSelectedCompanyId(companyId as string)}
           options={Object.entries(companies).map(([companyId, company]) => ({

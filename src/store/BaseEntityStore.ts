@@ -1,5 +1,5 @@
-import { action, makeObservable, observable } from "mobx";
-import { RootStore } from "./RootStore";
+import { action, makeObservable, observable } from 'mobx';
+import { RootStore } from './RootStore';
 
 export class BaseEntityStore<T, R> {
   rootStore: RootStore;

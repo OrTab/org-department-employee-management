@@ -1,8 +1,8 @@
-import { message, Modal, Form } from "antd";
-import { Employee } from "../../../store/entities/Employee";
-import { debounce } from "../../../utils";
-import { useCallback, useMemo, useState } from "react";
-import { useAppContext } from "../../../hooks/useAppContext";
+import { message, Modal, Form } from 'antd';
+import { Employee } from '../../../store/entities/Employee';
+import { debounce } from '../../../utils';
+import { useCallback, useMemo, useState } from 'react';
+import { useAppContext } from '../../../hooks/useAppContext';
 
 export const useEmployeesPage = () => {
   const {
@@ -22,7 +22,7 @@ export const useEmployeesPage = () => {
   } = useAppContext();
 
   const [isAddModalVisible, setIsAddModalVisible] = useState(false);
-  const [searchText, setSearchText] = useState("");
+  const [searchText, setSearchText] = useState('');
   const [selectedDepartments, setSelectedDepartments] = useState<string[]>([]);
   const [form] = Form.useForm();
 
@@ -33,9 +33,9 @@ export const useEmployeesPage = () => {
           companyId: selectedCompanyId,
           employeeId,
         });
-        message.success("Employee deleted successfully");
+        message.success('Employee deleted successfully');
       } catch {
-        message.error("Failed to delete employee");
+        message.error('Failed to delete employee');
       }
     },
     [companyController, selectedCompanyId]
@@ -69,10 +69,10 @@ export const useEmployeesPage = () => {
         },
         companyId: selectedCompanyId,
       });
-      message.success("Employee added successfully");
+      message.success('Employee added successfully');
       handleCloseModal();
     } catch {
-      message.error("Failed to add employee");
+      message.error('Failed to add employee');
     }
   }, [companyController, form, handleCloseModal, selectedCompanyId]);
 

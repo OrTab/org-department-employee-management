@@ -1,11 +1,11 @@
-import { observer } from "mobx-react-lite";
-import { Button, Table, TableColumnType } from "antd";
-import styled from "styled-components";
-import { useEmployeesPage } from "./hooks/useEmployeesPage";
-import { useWindowSize } from "../../hooks/useWindowSize";
-import { AddEmployeeModal } from "./components/AddEmployeeModal";
-import { TableHeader } from "./hooks/TableHeader";
-import { useMemo } from "react";
+import { observer } from 'mobx-react-lite';
+import { Button, Table, TableColumnType } from 'antd';
+import styled from 'styled-components';
+import { useEmployeesPage } from './hooks/useEmployeesPage';
+import { useWindowSize } from '../../hooks/useWindowSize';
+import { AddEmployeeModal } from './components/AddEmployeeModal';
+import { TableHeader } from './hooks/TableHeader';
+import { useMemo } from 'react';
 
 export const EmployeesPage = observer(() => {
   const {
@@ -28,29 +28,29 @@ export const EmployeesPage = observer(() => {
   const columns: TableColumnType<any>[] = useMemo(
     () => [
       {
-        title: "Name",
-        dataIndex: "name",
-        key: "name",
-        fixed: "left",
+        title: 'Name',
+        dataIndex: 'name',
+        key: 'name',
+        fixed: 'left',
       },
       {
-        title: "Email",
-        dataIndex: "email",
-        key: "email",
+        title: 'Email',
+        dataIndex: 'email',
+        key: 'email',
       },
       {
-        title: "Department",
-        dataIndex: "departmentId",
-        key: "department",
+        title: 'Department',
+        dataIndex: 'departmentId',
+        key: 'department',
         render: (departmentId: string) =>
-          departmentsById[departmentId]?.name || "Unknown",
+          departmentsById[departmentId]?.name || 'Unknown',
       },
       {
-        title: "Actions",
-        key: "actions",
+        title: 'Actions',
+        key: 'actions',
         render: (_: string, record: { key: string }) => (
           <Button
-            type='primary'
+            type="primary"
             danger
             onClick={() => handleDeleteClick(record.key)}
           >
@@ -84,11 +84,11 @@ export const EmployeesPage = observer(() => {
       />
 
       <Table
-        scroll={{ x: "max-content" }}
+        scroll={{ x: 'max-content' }}
         dataSource={employeesData}
         columns={columns}
-        rowKey='key'
-        pagination={isMediumUp ? { size: "default", pageSize: 9 } : false}
+        rowKey="key"
+        pagination={isMediumUp ? { size: 'default', pageSize: 9 } : false}
       />
 
       <AddEmployeeModal

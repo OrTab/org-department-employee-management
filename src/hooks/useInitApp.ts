@@ -1,7 +1,7 @@
-import { useEffect } from "react";
-import { useAppContext } from "./useAppContext";
-import { useLocation, useNavigate } from "react-router-dom";
-import { ROUTES } from "../routes";
+import { useEffect } from 'react';
+import { useAppContext } from './useAppContext';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { ROUTES } from '../routes';
 
 export const useInitApp = () => {
   const {
@@ -17,7 +17,7 @@ export const useInitApp = () => {
   } = useAppContext();
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const paths = pathname.split("/").filter(Boolean);
+  const paths = pathname.split('/').filter(Boolean);
   const companyId = paths[1];
 
   useEffect(() => {
@@ -52,7 +52,7 @@ export const useInitApp = () => {
 
     const path = paths[paths.length - 1];
     const route =
-      ROUTES.find((route) => route.key === path)?.key || "departments";
+      ROUTES.find((route) => route.key === path)?.key || 'departments';
     navigate(`company/${selectedCompanyId}/${route}`);
     // no need paths in deps
     // eslint-disable-next-line react-hooks/exhaustive-deps

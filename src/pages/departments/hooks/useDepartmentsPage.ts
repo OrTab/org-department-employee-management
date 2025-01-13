@@ -1,6 +1,6 @@
-import { useCallback, useState } from "react";
-import { useAppContext } from "../../../hooks/useAppContext";
-import { Form, message, Modal } from "antd";
+import { useCallback, useState } from 'react';
+import { useAppContext } from '../../../hooks/useAppContext';
+import { Form, message, Modal } from 'antd';
 
 export const useDepartmentsPage = () => {
   const {
@@ -15,7 +15,7 @@ export const useDepartmentsPage = () => {
     string | null
   >(null);
   const [actionForEmployees, setActionForEmployees] = useState<
-    "delete" | "move" | null
+    'delete' | 'move' | null
   >(null);
   const [targetDepartment, setTargetDepartment] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -30,9 +30,9 @@ export const useDepartmentsPage = () => {
           companyId: selectedCompanyId,
           departmentId,
         });
-        message.success("Department deleted successfully!");
+        message.success('Department deleted successfully!');
       } catch {
-        message.error("Failed to delete department!");
+        message.error('Failed to delete department!');
       } finally {
         setLoading(false);
       }
@@ -49,7 +49,7 @@ export const useDepartmentsPage = () => {
   const showDeleteConfirmation = useCallback(
     (departmentId: string) => {
       Modal.confirm({
-        title: "Are you sure you want to delete this department?",
+        title: 'Are you sure you want to delete this department?',
         content: `Department: ${selectedCompany.departmentsById[departmentId].name}`,
         onOk: () => handleDelete(departmentId),
         onCancel: handleClose,
@@ -68,10 +68,10 @@ export const useDepartmentsPage = () => {
         companyId: selectedCompanyId,
         departmentId: selectedDepartmentId,
       });
-      message.success("Employees deleted successfully!");
+      message.success('Employees deleted successfully!');
       showDeleteConfirmation(selectedDepartmentId);
     } catch {
-      message.error("Failed to delete employees!");
+      message.error('Failed to delete employees!');
     } finally {
       setLoading(false);
     }
@@ -91,10 +91,10 @@ export const useDepartmentsPage = () => {
         departmentId: selectedDepartmentId,
         targetDepartmentId: targetDepartment,
       });
-      message.success("Employees moved successfully!");
+      message.success('Employees moved successfully!');
       showDeleteConfirmation(selectedDepartmentId);
     } catch {
-      message.error("Failed to move employees!");
+      message.error('Failed to move employees!');
     } finally {
       setLoading(false);
     }
@@ -107,9 +107,9 @@ export const useDepartmentsPage = () => {
   ]);
 
   const onConfirmAction = useCallback(() => {
-    if (actionForEmployees === "delete") {
+    if (actionForEmployees === 'delete') {
       handleDeleteEmployees();
-    } else if (actionForEmployees === "move" && targetDepartment) {
+    } else if (actionForEmployees === 'move' && targetDepartment) {
       handleMoveEmployees();
     }
   }, [
@@ -145,10 +145,10 @@ export const useDepartmentsPage = () => {
         companyId: selectedCompanyId,
         shouldAddDummyEmployees: values.addDummyEmployees,
       });
-      message.success("Department added successfully!");
+      message.success('Department added successfully!');
       handleCloseAddDepartmentModal();
     } catch {
-      message.error("Failed to add department!");
+      message.error('Failed to add department!');
     } finally {
       setLoading(false);
     }

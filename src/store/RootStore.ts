@@ -1,4 +1,4 @@
-import { CompanyStore } from "./CompanyStore";
+import { CompanyStore } from './CompanyStore';
 
 export class RootStore {
   companyStore: CompanyStore;

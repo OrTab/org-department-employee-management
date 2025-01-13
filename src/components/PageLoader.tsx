@@ -1,10 +1,10 @@
-import { Spin } from "antd";
-import styled from "styled-components";
+import { Spin } from 'antd';
+import styled from 'styled-components';
 
 export const PageLoader = () => {
   return (
     <SpinContainer>
-      <Spin size='large' />
+      <Spin size="large" />
     </SpinContainer>
   );
 };
