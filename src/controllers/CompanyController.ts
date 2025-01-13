@@ -2,7 +2,13 @@ import { dummyCompanies, generateDummyEmployee } from "../dummyData";
 import { CompanyService } from "../services/CompanyService";
 import type { Employee } from "../store/entities/Employee";
 import type { RootStore } from "../store/RootStore";
-import { ICompany, IDepartment, IEmployee } from "../types";
+import {
+  DepartmentInput,
+  EmployeeInput,
+  ICompany,
+  IDepartment,
+  IEmployee,
+} from "../types";
 
 export class CompanyController {
   readonly rootStore: RootStore;
@@ -111,7 +117,7 @@ export class CompanyController {
     employee,
     companyId,
   }: {
-    employee: { name: string; email: string; departmentId: string };
+    employee: EmployeeInput;
     companyId: string;
   }) {
     const company = await this.getCompany({ companyId });
@@ -126,7 +132,7 @@ export class CompanyController {
     employee: { departmentId, name, email },
     companyId,
   }: {
-    employee: { name: string; email: string; departmentId: string };
+    employee: EmployeeInput;
     companyId: string;
   }): IEmployee {
     return {
@@ -151,7 +157,7 @@ export class CompanyController {
     companyId,
     shouldAddDummyEmployees = false,
   }: {
-    department: { name: string };
+    department: DepartmentInput;
     companyId: string;
     shouldAddDummyEmployees?: boolean;
   }) {
@@ -183,7 +189,7 @@ export class CompanyController {
     department,
     companyId,
   }: {
-    department: { name: string };
+    department: DepartmentInput;
     companyId: string;
   }): IDepartment {
     return {

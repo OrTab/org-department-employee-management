@@ -21,3 +21,7 @@ export interface IEmployee {
   departmentId: string;
   companyId: string;
 }
+
+export type EmployeeInput = Omit<IEmployee, "id" | "companyId">;
+
+export type DepartmentInput = Omit<IDepartment, "id" | "companyId">;
