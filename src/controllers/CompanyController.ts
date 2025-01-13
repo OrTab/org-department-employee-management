@@ -1,14 +1,16 @@
-import { dummyCompanies, generateDummyEmployee } from "../dummyData";
-import { CompanyService } from "../services/CompanyService";
-import type { Employee } from "../store/entities/Employee";
-import type { RootStore } from "../store/RootStore";
+import { dummyCompanies, generateDummyEmployee } from '../dummyData';
+import { CompanyService } from '../services/CompanyService';
+import type { Employee } from '../store/entities/Employee';
+import type { RootStore } from '../store/RootStore';
 import {
   DepartmentInput,
   EmployeeInput,
   ICompany,
   IDepartment,
   IEmployee,
-} from "../types";
+} from '../types';
+
+const COMPANIES_DELAY_MS = 500;
 
 export class CompanyController {
   readonly rootStore: RootStore;
@@ -18,7 +20,7 @@ export class CompanyController {
   }
 
   async loadCompanies() {
-    let companies = await CompanyService.getCompanies(500);
+    let companies = await CompanyService.getCompanies(COMPANIES_DELAY_MS);
     if (!companies) {
       companies = dummyCompanies;
       await CompanyService.saveCompanies(companies);
@@ -32,8 +34,21 @@ export class CompanyController {
   }: {
     departmentId: string;
     companyId: string;
-  }) {
-    const company = await this.getCompany({ companyId });
+  }): Promise<void> {
+    const company = await this.validateCompanyAndDepartment(
+      companyId,
+      departmentId
+    );
+
+    const employees =
+      this.rootStore.companyStore.companies[companyId].employeesByDepartmentId[
+        departmentId
+      ];
+
+    if (employees.length > 0) {
+      throw new Error('Cannot delete department with existing employees');
+    }
+
     delete company.departments[departmentId];
     await CompanyService.updateCompany(company);
     this.rootStore.companyStore.companies[companyId].deleteDepartment(
@@ -87,17 +102,26 @@ export class CompanyController {
     departmentId: string;
     targetDepartmentId: string;
     companyId: string;
-  }) {
-    return this.processEmployeesInDepartment({
-      departmentId,
+  }): Promise<void> {
+    const company = await this.validateCompanyAndDepartment(
       companyId,
-      processEmployee: (employee, company) => {
-        company.employees[employee.id].departmentId = targetDepartmentId;
-        this.rootStore.companyStore.companies[
-          companyId
-        ].moveEmployeeToDepartment(employee.id, targetDepartmentId);
-      },
-    });
+      targetDepartmentId
+    );
+
+    const employees =
+      this.rootStore.companyStore.companies[companyId].employeesByDepartmentId[
+        departmentId
+      ];
+
+    for (const employee of employees) {
+      company.employees[employee.id].departmentId = targetDepartmentId;
+      this.rootStore.companyStore.companies[companyId].moveEmployeeToDepartment(
+        employee.id,
+        targetDepartmentId
+      );
+    }
+
+    await CompanyService.updateCompany(company);
   }
 
   async deleteEmployee({
@@ -119,13 +143,20 @@ export class CompanyController {
   }: {
     employee: EmployeeInput;
     companyId: string;
-  }) {
-    const company = await this.getCompany({ companyId });
-    const newEmployee = this.createEmployee({ employee, companyId });
+  }): Promise<IEmployee> {
+    this.validateEmployee(employee);
+    const company = await this.validateCompanyAndDepartment(
+      companyId,
+      employee.departmentId
+    );
 
+    const newEmployee = this.createEmployee({ employee, companyId });
     company.employees[newEmployee.id] = newEmployee;
+
     await CompanyService.updateCompany(company);
     this.rootStore.companyStore.companies[companyId].addEmployee(newEmployee);
+
+    return newEmployee;
   }
 
   private createEmployee({
@@ -147,7 +178,7 @@ export class CompanyController {
   private async getCompany({ companyId }: { companyId: string }) {
     const company = await CompanyService.getCompany(companyId);
     if (!company) {
-      throw new Error("Company not found");
+      throw new Error('Company not found');
     }
     return company;
   }
@@ -214,5 +245,28 @@ export class CompanyController {
       employees[employee.id] = employee;
     }
     return employees;
+  }
+
+  private validateEmployee(employee: EmployeeInput): void {
+    if (!employee.name?.trim()) {
+      throw new Error('Employee name is required');
+    }
+    if (!employee.email?.trim()) {
+      throw new Error('Employee email is required');
+    }
+    if (!employee.departmentId) {
+      throw new Error('Department ID is required');
+    }
+  }
+
+  private async validateCompanyAndDepartment(
+    companyId: string,
+    departmentId: string
+  ): Promise<ICompany> {
+    const company = await this.getCompany({ companyId });
+    if (!company.departments[departmentId]) {
+      throw new Error('Department not found');
+    }
+    return company;
   }
 }
