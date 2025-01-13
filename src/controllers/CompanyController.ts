@@ -144,24 +144,57 @@ export class CompanyController {
     shouldAddDummyEmployees?: boolean;
   }) {
     const company = await this.getCompany({ companyId });
-    const newDepartment = {} as IDepartment;
-    newDepartment.id = crypto.randomUUID();
-    newDepartment.companyId = companyId;
-    newDepartment.name = department.name.trim();
-    const newEmployees: Record<string, IEmployee> = {};
-    if (shouldAddDummyEmployees) {
-      for (let i = 0; i < 10; i++) {
-        const employee = generateDummyEmployee(newDepartment.id, companyId);
-        company.employees[employee.id] = employee;
-        newEmployees[employee.id] = employee;
-      }
-    }
+
+    const newDepartment = this.createDepartment({ department, companyId });
+
+    const newEmployees = shouldAddDummyEmployees
+      ? this.generateDepartmentEmployees({
+          departmentId: newDepartment.id,
+          companyId,
+        })
+      : {};
+
     company.departments[newDepartment.id] = newDepartment;
+    Object.assign(company.employees, newEmployees);
+
     await CompanyService.updateCompany(company);
-    const currentCompany = this.rootStore.companyStore.companies[companyId];
-    currentCompany.addDepartment(newDepartment);
+
+    const currentCompanyModel =
+      this.rootStore.companyStore.companies[companyId];
+    currentCompanyModel.addDepartment(newDepartment);
     if (shouldAddDummyEmployees) {
-      currentCompany.addEmployees(Object.values(newEmployees));
+      currentCompanyModel.addEmployees(Object.values(newEmployees));
     }
+  }
+
+  private createDepartment({
+    department,
+    companyId,
+  }: {
+    department: { name: string };
+    companyId: string;
+  }): IDepartment {
+    return {
+      id: crypto.randomUUID(),
+      companyId,
+      name: department.name.trim(),
+    };
+  }
+
+  private generateDepartmentEmployees({
+    departmentId,
+    companyId,
+    numberOfEmployees = 10,
+  }: {
+    departmentId: string;
+    companyId: string;
+    numberOfEmployees?: number;
+  }): Record<string, IEmployee> {
+    const employees: Record<string, IEmployee> = {};
+    for (let i = 0; i < numberOfEmployees; i++) {
+      const employee = generateDummyEmployee(departmentId, companyId);
+      employees[employee.id] = employee;
+    }
+    return employees;
   }
 }
