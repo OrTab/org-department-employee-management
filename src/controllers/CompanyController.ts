@@ -1,6 +1,5 @@
 import { dummyCompanies, generateDummyEmployee } from '../dummyData';
 import { CompanyService } from '../services/CompanyService';
-import type { Employee } from '../store/entities/Employee';
 import type { RootStore } from '../store/RootStore';
 import {
   DepartmentInput,
@@ -40,10 +39,9 @@ export class CompanyController {
       departmentId
     );
 
-    const employees =
-      this.rootStore.companyStore.companies[companyId].employeesByDepartmentId[
-        departmentId
-      ];
+    const employees = Object.values(company.employees).filter(
+      (employee) => employee.departmentId === departmentId
+    );
 
     if (employees.length > 0) {
       throw new Error('Cannot delete department with existing employees');
@@ -63,12 +61,16 @@ export class CompanyController {
   }: {
     departmentId: string;
     companyId: string;
-    processEmployee: (employee: Employee, company: ICompany) => void;
+    processEmployee: (employee: IEmployee, company: ICompany) => void;
   }) {
-    const { companies } = this.rootStore.companyStore;
-    const company = await this.getCompany({ companyId });
-    const employees =
-      companies[companyId].employeesByDepartmentId[departmentId];
+    const company = await this.validateCompanyAndDepartment(
+      companyId,
+      departmentId
+    );
+    const employees = Object.values(company.employees).filter(
+      (employee) => employee.departmentId === departmentId
+    );
+
     for (const employee of employees) {
       processEmployee(employee, company);
     }
@@ -102,26 +104,17 @@ export class CompanyController {
     departmentId: string;
     targetDepartmentId: string;
     companyId: string;
-  }): Promise<void> {
-    const company = await this.validateCompanyAndDepartment(
+  }) {
+    return this.processEmployeesInDepartment({
+      departmentId,
       companyId,
-      targetDepartmentId
-    );
-
-    const employees =
-      this.rootStore.companyStore.companies[companyId].employeesByDepartmentId[
-        departmentId
-      ];
-
-    for (const employee of employees) {
-      company.employees[employee.id].departmentId = targetDepartmentId;
-      this.rootStore.companyStore.companies[companyId].moveEmployeeToDepartment(
-        employee.id,
-        targetDepartmentId
-      );
-    }
-
-    await CompanyService.updateCompany(company);
+      processEmployee: (employee, company) => {
+        company.employees[employee.id].departmentId = targetDepartmentId;
+        this.rootStore.companyStore.companies[
+          companyId
+        ].moveEmployeeToDepartment(employee.id, targetDepartmentId);
+      },
+    });
   }
 
   async deleteEmployee({
@@ -211,6 +204,7 @@ export class CompanyController {
     const currentCompanyModel =
       this.rootStore.companyStore.companies[companyId];
     currentCompanyModel.addDepartment(newDepartment);
+
     if (shouldAddDummyEmployees) {
       currentCompanyModel.addEmployees(Object.values(newEmployees));
     }
